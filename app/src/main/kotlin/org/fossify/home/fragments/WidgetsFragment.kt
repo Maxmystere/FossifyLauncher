@@ -39,6 +39,7 @@ class WidgetsFragment(context: Context, attributeSet: AttributeSet) :
     var touchDownY = -1
     var ignoreTouches = false
     private var widgets = emptyList<AppWidget>()
+    private var isSearchMenuSetup = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun setupFragment(activity: MainActivity) {
@@ -260,7 +261,10 @@ class WidgetsFragment(context: Context, attributeSet: AttributeSet) :
 
         binding.searchBar.requireToolbar().beGone()
         binding.searchBar.updateColors()
-        binding.searchBar.setupMenu()
+        if (!isSearchMenuSetup) {
+            binding.searchBar.setupMenu()
+            isSearchMenuSetup = true
+        }
         binding.searchBar.onSearchTextChangedListener = {
             splitWidgetsByApps()
         }

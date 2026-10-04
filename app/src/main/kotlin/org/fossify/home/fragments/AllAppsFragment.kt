@@ -35,6 +35,8 @@ class AllAppsFragment(
     var ignoreTouches = false
 
     private var launchers = emptyList<AppLauncher>()
+    private var isSearchMenuSetup = false
+    private var isScrollListenerAdded = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun setupFragment(activity: MainActivity) {
@@ -181,14 +183,17 @@ class AllAppsFragment(
         }
 
         binding.allAppsFastscroller.updateColors(context.getProperPrimaryColor())
-        binding.allAppsGrid.addOnScrollListener(object : OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                // Hiding is expensive, only do it if focused
-                if (binding.searchBar.hasFocus() && dy > 0 && binding.allAppsGrid.computeVerticalScrollOffset() > 0) {
-                    activity?.hideKeyboard()
+        if (!isScrollListenerAdded) {
+            binding.allAppsGrid.addOnScrollListener(object : OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    // Hiding is expensive, only do it if focused
+                    if (binding.searchBar.hasFocus() && dy > 0 && binding.allAppsGrid.computeVerticalScrollOffset() > 0) {
+                        activity?.hideKeyboard()
+                    }
                 }
-            }
-        })
+            })
+            isScrollListenerAdded = true
+        }
 
         setupDrawerBackground()
         getAdapter()?.updateTextColor(context.getProperTextColor())
@@ -196,7 +201,10 @@ class AllAppsFragment(
         binding.searchBar.beVisibleIf(context.config.showSearchBar)
         binding.searchBar.requireToolbar().beGone()
         binding.searchBar.updateColors()
-        binding.searchBar.setupMenu()
+        if (!isSearchMenuSetup) {
+            binding.searchBar.setupMenu()
+            isSearchMenuSetup = true
+        }
 
         binding.searchBar.onSearchTextChangedListener = {
             submitList(launchers)
