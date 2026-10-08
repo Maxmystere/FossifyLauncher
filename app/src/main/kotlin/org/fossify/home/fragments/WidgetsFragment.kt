@@ -44,6 +44,7 @@ class WidgetsFragment(context: Context, attributeSet: AttributeSet) :
     override fun setupFragment(activity: MainActivity) {
         this.activity = activity
         this.binding = WidgetsFragmentBinding.bind(this)
+        binding.searchBar.setupMenu()
         getAppWidgets()
 
         binding.widgetsList.setOnTouchListener { v, event ->
@@ -260,7 +261,6 @@ class WidgetsFragment(context: Context, attributeSet: AttributeSet) :
 
         binding.searchBar.requireToolbar().beGone()
         binding.searchBar.updateColors()
-        binding.searchBar.setupMenu()
         binding.searchBar.onSearchTextChangedListener = {
             splitWidgetsByApps()
         }
